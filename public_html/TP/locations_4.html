@@ -1,0 +1,106 @@
+<h2>Gestion du Réseau</h2>
+<p>Une Renault Twingo immatriculée DF-269-EF arrive à l'agence. Vous devez donc remettre 
+    votre analyse à plus tard et mettre à jour votre base de données. </p>
+<div class='question'>
+    Recherchez la dernière location de ce véhicule en utilisant la clef du véhicule (la clef virtuelle bien sûr). Notez bien la clef de la location, vous en aurez besoin plus tard.
+    <pre class='response'>SELECT *, MAX(date) from Locations WHERE vehicule="DF-269-EF";</pre>
+</div>
+<div class='question'>
+    Le client a effectué 247 km. Mettez à jour l'enregistrement de la location.
+    <pre class='response'>UPDATE Locations SET kilometrage=247 WHERE id=34;</pre>
+</div>
+<div class='question'>
+    Et vérifiez la modification.
+    <pre class='response'>SELECT * from Locations WHERE id=34;</pre>
+</div>
+<div class='question'>
+    Il vous reste maintenant à mettre à jour le kilométrage du véhicule immatriculé DF-269-EF.
+    <pre class='response'>UPDATE Vehicules SET kilometrage=kilometrage+247 WHERE immatriculation="DF-269-EF"</pre>
+</div>
+<div class='question'>
+    Et vérifiez la modification.
+    <pre class='response'>SELECT * from Vehicules WHERE immatriculation="DF-269-EF";</pre>
+</div>
+<p>Tiens un autre client entre dans l'agence. Il veut louer la Peugeot 108 immatriculée 
+    ED-587-EE. Il la ramènera à l'agence dans deux jours.</p>
+<div class='question'>
+    Récupérez la clef de l'agence de Lorient de nom Sépamieuayeur et notez la soigneusement.
+    <pre class='response'>SELECT id from Agences WHERE ville="Lorient" and nom="Sépamieuayeur";</pre>
+</div>
+<div class='question'>
+    Récupérez le plus grand des identifiants de la relation Locations.
+    <pre class='response'>SELECT MAX(id) from Locations;</pre>
+</div>
+<div class='question'>
+    Ajoutez un enregistrement dans la relation Locations à la date du 24 décembre 2020. 
+    <pre class='response'>INSERT INTO Locations(id,vehicule,depart,retour,kilometrage,date,duree)
+VALUES(41,"ED-587-EE",1,1,NULL,"2020-12-24",2);</pre>
+</div>
+<div class='question'>
+    Visualisez les noms et les immatriculations des véhicules loués le 24 décembre 2020.
+    <pre class='response'>SELECT nom, immatriculation from Locations JOIN Vehicules 
+ON Locations.vehicule = Vehicules.immatriculation WHERE date="2020-12-24";</pre>
+</div>
+<div class='question'>
+    Visualisez les noms et les immatriculations des véhicules en cours de location (le kilometrage est NULL).
+    <pre class='response'>SELECT nom, immatriculation from Locations 
+JOIN Vehicules ON Locations.vehicule = Vehicules.immatriculation 
+WHERE Locations.kilometrage is NULL;</pre>
+</div>
+<div class='question'>
+    Visualisez dans l'ordre chronologique la date et la durée de la location,
+    les noms et les immatriculations des véhicules en cours de location ainsi que les noms et les villes
+    des agences de départ et de retour.
+    <pre class='response'>SELECT date, duree, Vehicules.nom, immatriculation, depart.nom, depart.ville, retour.nom,retour.ville 
+from Locations JOIN Vehicules ON Locations.vehicule = Vehicules.immatriculation 
+JOIN Agences AS depart ON Locations.depart=depart.id
+JOIN Agences AS retour ON Locations.retour=retour.id
+WHERE Locations.kilometrage is NULL ORDER BY date</pre>
+</div>
+<p>Vous constatez que deux enregistrements de location sont associés à une durée de location nulle. Ceci indique
+    que le véhicule n'est pas disponible à la location. Il s'agit de votre C5 mais aussi d'une C4. Il semble
+    que le gérant de l'agence de l'Île de Sein se soit réservé depuis déjà deux mois la jouissance exclusive de ce véhicule.
+    Vous décidez d'analyser plus en détail les locations dont cette agence est point de départ ou d'arrivée.</p>
+<div class='question'>    
+    Visualisez dans l'ordre chronologique, la date et la durée de la location,
+    les noms et les immatriculations des véhicules ainsi que les nom et la ville 
+    des agences de départ et de retour les locations dont l'agence de location est point de départ
+    ou d'arrivée.
+    <pre class='response'>SELECT date, duree, Vehicules.nom, immatriculation, depart.nom, depart.ville, retour.nom,retour.ville 
+from Locations JOIN Vehicules ON Locations.vehicule = Vehicules.immatriculation 
+JOIN Agences AS depart ON Locations.depart=depart.id
+JOIN Agences AS retour ON Locations.retour=retour.id
+WHERE depart.ville="Île de Sein" OR retour.ville="Île de Sein" ORDER BY date;</pre>
+</div>
+
+<div class='question'>
+    Vous décidez de vous séparer de cette agence et d'effacer proprement l'activité de cette agence. Récupérer
+    les clefs primaires des locations associées à cette agence.
+    <pre class='response'>SELECT Locations.id FROM Locations
+JOIN Agences AS depart ON Locations.depart=depart.id
+JOIN Agences AS retour ON Locations.retour=retour.id
+WHERE depart.ville="Île de Sein" OR retour.ville="Île de Sein";</pre>
+</div>
+
+<div class='question'>
+Supprimez les locations dont l'agence est point de départ ou d'arrivée en utilisant la
+construction WHERE IN (id1,id2).
+<pre class='response'>DELETE FROM Locations WHERE id IN (24,39);</pre>
+</div>
+
+<div class='question'>
+    Maintenant que vous avez supprimé toutes les références à cette agence, vous pouvez
+    supprimer également l'enregistrement de la relation Agences relatif à celle-ci.
+    <pre class='response'>DELETE FROM Agences WHERE ville="Île de Sein";</pre>
+</div>
+
+<div class='question'>
+Il est temps de vous préparer pour le réveillon. Vérifiez neanmoins qu'il ne reste aucune voiture à
+réceptionner. Combien y a-t-il de locations en cours dont l'agence d'arrivée est 
+Sépamieuayeur à Lorient. <pre class='response'>SELECT * FROM Locations
+JOIN Agences AS depart ON Locations.depart=depart.id
+WHERE Locations.kilometrage is NULL AND depart.nom="Sépamieuayeur" AND depart.ville="Lorient";</pre>
+</div>
+
+<p>C'est votre C5 !</p>
+<p>Bon réveillon !</p>

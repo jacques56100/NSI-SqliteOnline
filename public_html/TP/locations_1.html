@@ -1,0 +1,72 @@
+<h2>La relation Agences</h2>
+<p>Au départ ce réseau se limitait à la région Bretagne mais peu 
+    à peu vous avez ouvert de nombreuses agences et maintenant le 
+    réseau couvre tout le territoire national. Un certain nombre 
+    d'informations relatives à ces agences sont stockées dans la base 
+    de données. Par exemple, vous pouvez obtenir les noms des enseignes ou 
+    les villes dans lesquelles elles sont situées. Plus précisément, 
+    la relation Agences est décrite par :</p>
+<br>
+<br>
+<table>
+    <tr><td>id</td><td>INT</td><td>la clef primaire</td></tr>
+    <tr><td>nom</td><td>TEXT</td><td>vous avez de l'humour</td></tr>
+    <tr><td>adresse</td><td>TEXT</td><td>rue, avenue, boulevard...</td></tr>
+    <tr><td>code</td><td>INT</td><td>le code postal</td></tr>
+    <tr><td>ville</td><td>TEXT</td><td>la ville</td></tr>
+    <tr><td>pays</td><td>TEXT</td><td>le pays</td></tr>
+</table>
+
+<div class='question'>
+    Visualisez toute la relation Agences.
+    <pre class='response'>SELECT * FROM Agences</pre>
+</div>
+
+<div class='question'>
+    Listez uniquement les noms des agences et leur ville.
+    <pre class='response'>SELECT nom, ville FROM Agences</pre>
+</div>
+
+<div class='question'>
+    Listez les noms des agences de la ville de Lorient.
+    <pre class='response'>SELECT nom FROM Agences WHERE ville='Lorient'</pre>
+</div>
+
+<div class='question'>
+    Listez les noms des agences du département du Morbihan (code postal 56***) ainsi que 
+    les codes postaux en utilisant un WHERE LIKE.
+    <pre class='response'>SELECT nom, code FROM Agences WHERE code LIKE "56%"</pre>
+</div> 
+
+<div class='question'>
+    Listez les noms des agences du département du Morbihan ainsi que 
+    les codes postaux en utilisant la fonction SUBSTR(str,first,nb) dans un WHERE.
+    <pre class='response'>SELECT nom, code FROM Agences WHERE SUBSTR(code,1,2) = "56"</pre>
+</div>
+
+<div class='question'>
+    Listez les villes du département du Morbihan hébergeant au moins une agence. Attention, 
+    une ville ne doit apparaître qu'une seule fois.
+    <pre class='response'>SELECT DISTINCT ville FROM Agences WHERE code LIKE "56%"</pre>
+</div>
+
+<div class='question'>
+    Listez les noms des agences en Bretagne ("56","29","35","22") ainsi que les codes postaux
+    en utilisant la fonction SUBSTR(str,first,nb) et la directive IN (element1,element2,element3,...)
+    <pre class='response'>SELECT nom, code FROM Agences WHERE SUBSTR(code,1,2) IN ("56","29","35","22")</pre>
+</div>
+
+<div class='question'>
+    Déterminez le nombre d'agences en Bretagne.
+    <pre class='response'>SELECT COUNT() FROM Agences WHERE SUBSTR(code,1,2) IN ("56","29","35","22")</pre>
+</div>
+
+<div class='question'>
+    Déterminez le nombre d'agences en France.
+    <pre class='response'>SELECT COUNT() FROM Agences WHERE pays="France"</pre>
+</div>
+
+<p>Vous êtes assez satisfait car en à peine 6 mois vous avez déjà 12 agences
+    bien réparties sur le territoire national. Il faut 
+    dire que vous avez largement investi dans l'immobilier. En plus vous 
+    connaissez bien les gérants, tous des copains d'enfance. Allons analyser maintenant la flotte de véhicules.</p>

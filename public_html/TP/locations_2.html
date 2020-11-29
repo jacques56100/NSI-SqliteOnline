@@ -1,0 +1,104 @@
+<h2>La relation Vehicules</h2>
+
+<p>Les véhicules de votre flotte sont également représentés dans votre base
+    de données. Les informations sont regroupées dans la relation Vehicules dont 
+    les caractéristiques sont précisées ci-dessous:</p>
+
+<table>
+    <tr><td>immatriculation</td><td>TEXT</td><td>de la forme XX-000-XX, la clef primaire</td></tr>
+    <tr><td>nom</td><td>TEXT</td><td>la marque et le modèle</td></tr>
+    <tr><td>kilometrage</td><td>INT</td><td>le kilométrage de ce véhicule</td></tr>
+    <tr><td>age</td><td>TEXT</td><td>indiqué en mois</td></tr>
+</table>
+
+<div class='question'>
+    Déterminez le nombre de voitures que vous possédez.
+    <pre class='response'>SELECT COUNT() FROM Vehicules</pre>
+</div>
+
+<p>Perso, je trouve que ça ne fait pas beaucoup de véhicules 
+    à louer par agence mais je sais que vous venez juste de
+    lancer votre petite entreprise. Regardons alors comment évoluent
+    les acquisitions de véhicules. </p>
+
+<div class='question'>
+    Vous avez eu la bonne idée de mémoriser pour vos
+    véhicules le nombre de mois de présence dans l'agence (attribut age). 
+    Déterminez le nombre de mois minimum et maximum de vos véhicules.
+    <pre class='response'>SELECT MIN(age), MAX(age) FROM Vehicules</pre>
+</div>
+
+<div class='question'>
+    Votre flotte n'est pas très importante mais plutôt récente.
+    Quels sont la marque et le modèle de votre dernière acquisition qui date de trois 
+    mois ?
+    <pre class='response'>SELECT nom FROM Vehicules WHERE age=3</pre>
+</div>
+
+<div class='question'>
+    Depuis combien de mois n'avez-vous pas acquis un véhicule de la marque Peugeot.
+    <pre class='response'>SELECT MIN(age) FROM Vehicules WHERE nom LIKE "%Peugeot%"</pre>
+</div>
+
+<div class='question'>
+    Regardons maintenant le kilométrage 
+    maximum de vos véhicules.
+    <pre class='response'>SELECT MAX(kilometrage) FROM Vehicules</pre>
+</div>
+
+<div class='question'>
+    Diable, ça fait beaucoup. Mais qu'en est-il du reste de la flotte ?
+    Déterminez le kilométrage moyen en utilisant la fonction AVG.
+    <pre class='response'>SELECT AVG(kilometrage) FROM Vehicules</pre>
+</div>
+
+<div class='question'>
+    Et si vous listiez toute la flotte dans l'ordre décroissant de leur
+    kilométrage ?
+    <pre class='response'>SELECT * FROM Vehicules ORDER BY kilometrage DESC</pre>
+</div>
+
+<div class='question'>
+    Il semble que vos véhicules soient très sollicités. Dans votre
+    base de données vous avez le kilométrage du véhicule ainsi que le nombre de 
+    mois de présence dans l'agence. Listez votre flotte en indiquant
+    uniquement le modèle, son immatriculation et le nombre moyen de kilomètres 
+    parcourus par mois. 
+    <pre class='response'>SELECT nom, immatriculation, kilometrage/age FROM Vehicules</pre>
+</div>
+
+<div class='question'>
+    Déterminez l'immatriculation de la voiture de marque Renault ayant le nombre moyen de kilomètres parcourus par 
+    mois le plus important en utilisant la fonction MAX.
+    <pre class='response'>SELECT immatriculation, MAX(kilometrage/age) FROM Vehicules 
+WHERE nom LIKE "%Renault%"</pre>
+</div>
+
+<div class='question'>
+    A 0.35€ du kilomètre, cela fait un paquet d'argent !
+    Visualisez alors les noms et les immatriculations des vehicules avec en plus les recettes moyennes 
+    par mois. Cette moyenne sera arrondie à l'entier le plus proche et devra être renommée recette 
+    dans le tableau résultat.
+    <pre class='response'>SELECT nom, immatriculation, ROUND(0.35*kilometrage/age) AS recette
+FROM Vehicules</pre>
+</div>
+
+<div class='question'>
+    Votre entreprise est vraiment florissante. Mais quelles sont les voitures les plus rentables ? 
+    Listez les  les noms et les immatriculations des vehicules  dans l'ordre décroissant de cette rentabilité.
+    <pre class='response'>SELECT nom, immatriculation, ROUND(0.35*kilometrage/age) AS recette 
+FROM Vehicules ORDER BY recette DESC</pre>
+</div>
+
+<p>La voiture la moins rentable 
+    est la Citroën C5 immatriculée AE-478-DD. Cela ne vous étonne 
+    pas car c'est votre voiture de fonction dont vous vous êtes réservé la 
+    jouissance exclusive. Par contre,
+    ce qui vous étonne c'est qu'elle rapporterait quand même 113€ par mois !</p>
+
+<p>Oups, vous venez de vous rendre compte que vous avez fait n'importe quoi. 
+    Vous avez acheté d'occasion la
+    totalité des véhicules (sauf votre C5) et le kilométrage actuel ne donne 
+    guère d'information sur la rentabilité de votre entreprise. Il faudrait 
+    plutôt analyser l'historique des locations.</p>
+

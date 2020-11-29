@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Online SQL interpreter</title>
+        <link rel="icon" type="image/png" href="favicon.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.1/codemirror.css">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.1/codemirror.js"></script>
+    </head>
+
+    <body>
+        <div id="content" class="content">
+        </div>
+        <textarea id="commands"></textarea>
+        <br>
+        <button onclick=test(this)>Tester</button>
+        <button onclick=validate(this)>Valider</button>
+        <button onclick=giveup(this)>Abandonner</button>
+        <button id="print"  style="display:none" onclick=window.print()>Générer un pdf</button>
+        <div id="error" class="error"></div>
+        <pre id="output">Les résultats apparaitront ici</pre>
+        <br>
+        <br>
+        <br>
+        <br>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.1/mode/sql/sql.min.js"></script>
+        <script type="text/javascript" src="script.js"></script>
+    </body>
+
+</html>

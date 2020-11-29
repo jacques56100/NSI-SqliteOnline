@@ -1,0 +1,87 @@
+<h2>La relation Locations</h2>
+
+<p>Dans votre base de données une location associe un véhicule et deux agences de
+    location : celle dans laquelle la location est établie et celle où le 
+    véhicule est rendu. Elle mémorise également la date de location, le
+    nombre de jours de réservation et le nombre de kilomètres parcourus.
+    Le schéma relationnel est précisé ci-dessous:</p>
+<br>
+<br>
+<table>
+    <tr><td>id</td><td>INT</td><td>la clef primaire</td></tr>
+    <tr><td>vehicule</td><td>INT</td><td>le vehicule (foreign key)</td></tr>
+    <tr><td>depart</td><td>INT</td><td>l'agence de départ (foreign key)</td></tr>
+    <tr><td>retour</td><td>INT</td><td>l'agence d'arrivée (foreign key)</td></tr>
+    <tr><td>kilometrage</td><td>INT</td><td>le kilométrage parcouru ou 0 si la location est en cours</td></tr>
+    <tr><td>date</td><td>DATE</td><td>la date de la location</td></tr>
+    <tr><td>duree</td><td>INT</td><td>indiquée en jour</td></tr>
+</table>
+<div class='question'>
+    Visualisez la relation Locations.
+    <pre class='response'>SELECT * FROM Locations</pre>
+</div>
+<div class='question'>
+    Déterminez le nombre de locations effectuées.
+    <pre class='response'>SELECT COUNT() FROM Locations</pre>
+</div>
+<div class='question'>
+    Déterminez le nombre de locations effectuées avec changement d'agence.
+    <pre class='response'>SELECT COUNT() FROM Locations WHERE depart<>retour</pre>
+</div>
+<div class='question'>
+    Déterminez le nombre total de kilomètres effectués durant les locations.
+    <pre class='response'>SELECT SUM(kilometrage) FROM Locations</pre>
+</div>
+<div class='question'>
+    Déterminez le nombre moyen de kilomètres effectués lors des locations dont l'agence 
+    de départ est la même que celle de retour (le résultat sera arrondi à sa valeur entière)
+    <pre class='response'>SELECT ROUND(AVG(kilometrage)) FROM Locations WHERE depart=retour</pre>
+</div>
+<div class='question'>
+    Listez les locations en y associant les caractéristiques du vehicule en réalisant une jointure.
+    <pre class='response'>SELECT * FROM Locations JOIN Vehicules ON Locations.vehicule=Vehicules.immatriculation</pre>
+</div>
+<div class='question'>
+    Affichez la marque, le modèle et l'immatriculation du véhicule ainsi que la date de la 
+    location et le kilométrage réalisée pendant la location.
+    <pre class='response'>SELECT Vehicules.nom, Vehicules.immatriculation, Locations.date, Locations.kilometrage 
+FROM Locations JOIN Vehicules ON Locations.vehicule=Vehicules.immatriculation</pre>
+</div>
+<div class='question'>
+    Affichez une seule fois la marque, le modèle et l'immatriculation des véhicules ayant déjà été loués.
+    <pre class='response'>SELECT DISTINCT Vehicules.nom, Vehicules.immatriculation 
+FROM Locations JOIN Vehicules ON Locations.vehicule=Vehicules.immatriculation</pre>
+
+</div>
+<div class='question'>
+    Affichez les locations du véhicule immatriculé AB-224-BA
+    dans l'ordre chronologique des locations.
+    <pre class='response'>SELECT Locations.* FROM Locations 
+WHERE vehicule="AB-224-BA"ORDER BY Locations.date</pre>
+</div>
+<div class='question'>
+    Affichez les locations du véhicule immatriculé AB-224-BA en précisant le nom de l'agence de 
+    départ ainsi que la ville de départ dans l'ordre chronologique des locations.
+    <pre class='response'>SELECT Agences.nom, Agences.ville, Locations.* FROM Locations 
+JOIN Agences ON Locations.depart=Agences.id
+WHERE vehicule="AB-224-BA"
+ORDER BY Locations.date</pre>
+</div>
+<div class='question'>
+    Affichez une seule fois les noms des agences de 
+    départ ainsi que leur ville dans laquelle le véhicule immatriculé AB-224-BA a été loué.
+
+    <pre class='response'>SELECT DISTINCT Agences.nom, Agences.ville FROM Locations 
+JOIN Agences ON Locations.depart=Agences.id
+WHERE vehicule="AB-224-BA"</pre>
+</div>
+<div class='question'>
+    Affichez les dates des locations ainsi que les noms des agences et des villes de 
+    départ et de retour des locations du véhicule immatriculé AB-224-BA dans l'ordre chronologique.
+
+    <pre class='response'>SELECT Locations.date, depart.nom, depart.ville, retour.nom,retour.ville
+FROM Locations 
+JOIN Agences as depart ON Locations.depart=depart.id
+JOIN Agences as retour ON Locations.retour=retour.id
+WHERE vehicule="AB-224-BA" ORDER BY Locations.date</pre>
+</div>
