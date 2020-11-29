@@ -14,11 +14,12 @@
         <div id="content" class="content">
         </div>
         <textarea id="commands"></textarea>
+        <div class="textReply"><textarea id="textReply"></textarea></div>
         <br>
-        <button onclick=test(this)>Tester</button>
-        <button onclick=validate(this)>Valider</button>
-        <button onclick=giveup(this)>Abandonner</button>
-        <button id="print"  style="display:none" onclick=window.print()>Générer un pdf</button>
+        <button id="testButton" onclick=test(this)>Tester</button>
+        <button id="validateButton" onclick=validate(this)>Valider</button>
+        <button id="cancelButton" onclick=giveup(this)>Abandonner</button>
+        <button id="printButton"  style="display:none" onclick=window.print()>Générer un pdf</button>
         <div id="error" class="error"></div>
         <pre id="output">Les résultats apparaitront ici</pre>
         <br>

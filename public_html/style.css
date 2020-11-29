@@ -29,7 +29,17 @@ p {
     margin: 1em;
     overflow: auto;
 }
-.CodeMirror {
+.textReply {
+    padding: 1em;
+}
+#textReply {
+     border: 1px solid #222;
+    min-height:5.5em;
+    height: auto;
+    width:100%;
+    resize:none;
+}
+.CodeMirror{
     border: 1px solid #222;
     min-height:5.5em;
     height: auto;
