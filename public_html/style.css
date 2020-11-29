@@ -10,6 +10,9 @@ body {
     box-shadow: 5px 0px 30px #000;
     border-radius: 8px;
 }
+footer {
+    margin-top:4em;
+}
 p {
     text-align: justify;
 }
