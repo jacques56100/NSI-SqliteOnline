@@ -1,6 +1,6 @@
 # NSI-SqliteOnline
 
-<p>Here are just a few files to build exercices on SQL DB. It is powered by <a href="https://sql.js.org/">SQLite compiled to JavaScript</a>.</p>
+<p>Here are just a few files to build exercices on SQL DB. It is powered by <a href="https://sql.js.org/">SQLite compiled to JavaScript</a>. There are a few examples available <a href="http://nsi.colbert.bzh/sql">here.</a></p>
 <p>Just add two files into the folder named TP<p>
 <ul>
 <li>a sqlite file width ".sql" extension to init the database</li>
