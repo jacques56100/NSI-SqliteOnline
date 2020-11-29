@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 DROP TABLE IF EXISTS Agences;
 CREATE TABLE Agences( id INT PRIMARY KEY NOT NULL,
                         nom text,
