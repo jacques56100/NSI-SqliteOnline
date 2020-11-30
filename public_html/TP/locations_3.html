@@ -22,11 +22,11 @@
 </div>
 <div class='question'>
     Déterminez le nombre de locations effectuées.
-    <pre class='response'>SELECT COUNT() FROM Locations</pre>
+    <pre class='response'>SELECT COUNT(*) FROM Locations</pre>
 </div>
 <div class='question'>
     Déterminez le nombre de locations effectuées avec changement d'agence.
-    <pre class='response'>SELECT COUNT() FROM Locations WHERE depart<>retour</pre>
+    <pre class='response'>SELECT COUNT(*) FROM Locations WHERE depart<>retour</pre>
 </div>
 <div class='question'>
     Déterminez le nombre total de kilomètres effectués durant les locations.
@@ -57,15 +57,14 @@ FROM Locations JOIN Vehicules ON Locations.vehicule=Vehicules.immatriculation</p
     Affichez les locations du véhicule immatriculé AB-224-BA
     dans l'ordre chronologique des locations.
     <pre class='response'>SELECT Locations.* FROM Locations 
-WHERE vehicule="AB-224-BA"ORDER BY Locations.date</pre>
+WHERE vehicule='AB-224-BA' ORDER BY Locations.date</pre>
 </div>
 <div class='question'>
     Affichez les locations du véhicule immatriculé AB-224-BA en précisant le nom de l'agence de 
     départ ainsi que la ville de départ dans l'ordre chronologique des locations.
     <pre class='response'>SELECT Agences.nom, Agences.ville, Locations.* FROM Locations 
 JOIN Agences ON Locations.depart=Agences.id
-WHERE vehicule="AB-224-BA"
-ORDER BY Locations.date</pre>
+WHERE vehicule='AB-224-BA' ORDER BY Locations.date</pre>
 </div>
 <div class='question'>
     Affichez une seule fois les noms des agences de 
@@ -73,7 +72,7 @@ ORDER BY Locations.date</pre>
 
     <pre class='response'>SELECT DISTINCT Agences.nom, Agences.ville FROM Locations 
 JOIN Agences ON Locations.depart=Agences.id
-WHERE vehicule="AB-224-BA"</pre>
+WHERE vehicule='AB-224-BA'</pre>
 </div>
 <div class='question'>
     Affichez les dates des locations ainsi que les noms des agences et des villes de 
@@ -83,5 +82,5 @@ WHERE vehicule="AB-224-BA"</pre>
 FROM Locations 
 JOIN Agences as depart ON Locations.depart=depart.id
 JOIN Agences as retour ON Locations.retour=retour.id
-WHERE vehicule="AB-224-BA" ORDER BY Locations.date</pre>
+WHERE vehicule='AB-224-BA' ORDER BY Locations.date</pre>
 </div>

@@ -71,19 +71,17 @@ var tableCreate = function () {
 }();
 
 function test() {
-    noerror()
-    execute(editor.getValue() + ';');
+    noerror();
+    if(isDb()) execute(editor.getValue() + ';');
 }
 function validate() {
-    noerror()
-    execute(editor.getValue() + ';');
+    test();
     show(false);
     advance();
 }
 function giveup() {
-    noerror();
-    show(true);
-    editor.setValue(getSolution());
+    show(true);    
+    if(isDb()) editor.setValue(getSolution());
     test();
     advance();
 }
@@ -93,15 +91,18 @@ function getSolution() {
     }
     return "";
 }
+function isText() {
+    return question.classList.contains("text");
+}
+function isDb() {
+    return !isText();
+}
+function hasResponse() {
+    return question.getElementsByClassName("response").length!=0;
+}
 function show(cancel) {
-    var response = "";
-    if (question.classList.contains("text")) {
-        response += textReply.value;    
-    } else {
-        response += editor.getValue();
-        execute(response + ';');        
-    }
-    if(question.getElementsByClassName("response").length!=0) {        
+    var response = (isText()) ? textReply.value : editor.getValue();
+    if(hasResponse()) {        
         response += (cancel) ? "\n---- Dommage: ----\n" : "\n-----------\n( ";
         response += getSolution();
         response += (cancel) ? "" : " )";
@@ -134,7 +135,7 @@ function updateDisplay() {
         cancelButton.style.display = "none";
         printButton.style.display = "";
     }
-    if(question.classList.contains("text")) {
+    if(isText()) {
         textReply.style.display = "block";
         dbReply.style.display = "none";
         testButton.style.display = "none";
