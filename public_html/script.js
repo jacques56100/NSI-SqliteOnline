@@ -15,6 +15,7 @@ let worker = null;
 let question = null;
 let pyProg = "";
 let nbQuestion = 0;
+let content = "";
 
 
 // Les fonctions pour python
@@ -32,7 +33,7 @@ function initPy() {
         }
     });
     pyReply = pyReply.nextElementSibling;
-    pyReply.id="pyEditor";
+    pyReply.id = "pyEditor";
 }
 
 function readPy(x) {
@@ -72,7 +73,7 @@ function initSql() {
     worker = new Worker("worker.sql-wasm.js");
     worker.onerror = error;
     dbReply = dbReply.nextElementSibling;
-    dbReply.id="dbEditor";
+    dbReply.id = "dbEditor";
 }
 function execSql(commands) {
     worker.onmessage = function (event) {
@@ -205,6 +206,7 @@ function updateDisplay() {
 
 function initContent() {
     let display = true;
+    nbQuestion = 0;
     els = sujet.childNodes;
     for (el in els) {
         if (els[el].classList != undefined)
@@ -239,6 +241,26 @@ function openSqlFile(event) {
     reader.addEventListener('load', (event) => {
         db = event.target.result;
         execSql(db);
+    });
+    reader.readAsText(file);
+}
+function reloadHtmlFile() {
+    let start = document.getElementById("start");
+    let child = start.nextSibling;
+    while(start.nextSibling != null) 
+        sujet.removeChild(start.nextSibling);
+    sujet.innerHTML += content;
+    initContent();
+    updateDisplay();
+}
+function openHtmlFile(event) {
+    let files = event.target.files;
+    if (files.length == 0) return;
+    let file = files[0];
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        content = event.target.result;
+        reloadHtmlFile();
     });
     reader.readAsText(file);
 }

@@ -42,7 +42,7 @@ p {
 .response {
     display: none;
 }
-#sujet pre {
+#sujet pre, pre.gray {
     border: 1px black solid;
     background-color: lightgray;
     padding: 1em;    
