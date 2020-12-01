@@ -76,7 +76,7 @@ WHERE nom LIKE '%Renault%'</pre>
 
 <div class='question'>
     A 0.35€ du kilomètre, cela fait un paquet d'argent !
-    Visualisez alors les noms et les immatriculations des vehicules avec en plus les recettes moyennes 
+    Visualisez alors les marques, les modèles et les immatriculations des vehicules avec en plus les recettes moyennes 
     par mois. Cette moyenne sera arrondie à l'entier le plus proche et devra être renommée recette 
     dans le tableau résultat.
     <pre class='response'>SELECT nom, immatriculation, ROUND(0.35*kilometrage/age) AS recette
@@ -85,7 +85,7 @@ FROM Vehicules</pre>
 
 <div class='question'>
     Votre entreprise est vraiment florissante. Mais quelles sont les voitures les plus rentables ? 
-    Listez les  les noms et les immatriculations des vehicules  dans l'ordre décroissant de cette rentabilité.
+    Listez les marques, les modèles et les immatriculations des vehicules  dans l'ordre décroissant de cette rentabilité.
     <pre class='response'>SELECT nom, immatriculation, ROUND(0.35*kilometrage/age) AS recette 
 FROM Vehicules ORDER BY recette DESC</pre>
 </div>

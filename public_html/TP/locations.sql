@@ -1,6 +1,9 @@
 PRAGMA foreign_keys = ON;
 
+DROP TABLE IF EXISTS Locations;
 DROP TABLE IF EXISTS Agences;
+DROP TABLE IF EXISTS Vehicules;
+
 CREATE TABLE Agences( id INT PRIMARY KEY NOT NULL,
                         nom text,
                         adresse text, 
@@ -8,25 +11,35 @@ CREATE TABLE Agences( id INT PRIMARY KEY NOT NULL,
                         ville text,
                         pays text);
 
+CREATE TABLE Vehicules( immatriculation TEXT PRIMARY KEY NOT NULL,
+                        nom TEXT,                        
+                        kilometrage INT,
+                        age INT);
+
+CREATE TABLE Locations( id INT PRIMARY KEY NOT NULL,
+                        vehicule STR NOT NULL,
+                        depart INT NOT NULL,
+                        retour INT NOT NULL,
+                        kilometrage int,
+                        date date,
+                        duree int,
+FOREIGN KEY (vehicule) REFERENCES Vehicules(immatriculation),
+FOREIGN KEY (depart) REFERENCES Agences(id),
+FOREIGN KEY (retour) REFERENCES Agences(id)
+);
+
 INSERT INTO Agences VALUES (1,'Sépamieuayeur', '5 quai des bavards',"56100","Lorient","France");
 INSERT INTO Agences VALUES (2,'Moincheryapa','4 rue Parmentier',"56100","Lorient","France");
 INSERT INTO Agences VALUES (3,'Pacher','5 avenue du lac',"56000","Vannes","France");
 INSERT INTO Agences VALUES (4,'Pourcoipahici','45 boulevard Leon Blum',"56100","Lorient","France");
 INSERT INTO Agences VALUES (5,'Quiquanveu','45 rue de Siam',"29000","Brest","France");
-INSERT INTO Agences VALUES (6,'Chezpopol','35 route de Lorient',"35000","Rennes","France");
+INSERT INTO Agences VALUES (6,'Pafameu','35 route de Lorient',"35000","Rennes","France");
 INSERT INTO Agences VALUES (7,'Padarnac','45 rue du Soleil',"31000","Toulouse","France");
 INSERT INTO Agences VALUES (8,'Assébienpourtoi','5 place de la Lune',"33000","Bordeaux","France");
 INSERT INTO Agences VALUES (9,'Falépa','18 boulevard des bavards',"29990", "Île de Sein","France");
 INSERT INTO Agences VALUES (10,'Pacherdutou','15 boulevard des muets',"75001","Paris","France");
 INSERT INTO Agences VALUES (11,'Pourcoipala','18 boulevard de la mer',"22300","Lannion","France");
 INSERT INTO Agences VALUES (12,'Viendonc','18 route de la plage',"78000","Versailles","France");
-
-DROP TABLE IF EXISTS Vehicules;
-CREATE TABLE Vehicules( immatriculation TEXT PRIMARY KEY NOT NULL,
-                        nom TEXT,                        
-                        kilometrage INT,
-                        age INT);
-
 
 INSERT INTO Vehicules VALUES ('AB-224-BA','Renault Megane',156107,6);
 INSERT INTO Vehicules VALUES ('CB-424-BC','Renault Megane',55108,3);
@@ -39,19 +52,6 @@ INSERT INTO Vehicules VALUES ('AA-654-BA','Peugeot 108',115890,6);
 INSERT INTO Vehicules VALUES ('EE-854-EF','Citroën C4',91105,6);
 INSERT INTO Vehicules VALUES ('AE-478-DD','Citroën C5',2589,8);
 
-
-DROP TABLE IF EXISTS Locations;
-CREATE TABLE Locations( id INT PRIMARY KEY NOT NULL,
-                        vehicule STR NOT NULL,
-                        depart INT NOT NULL,
-                        retour INT NOT NULL,
-                        kilometrage int,
-                        date date,
-                        duree int,
-FOREIGN KEY (vehicule) REFERENCES Vehicules(immatriculation),
-FOREIGN KEY (depart) REFERENCES Agences(id),
-FOREIGN KEY (retour) REFERENCES Agences(id)
-);
 INSERT INTO Locations VALUES (1,'AB-224-BA',1,1,452,"2020-05-03",1);
 INSERT INTO Locations VALUES (3,'AB-224-BA',3,1,1402,"2020-07-10",1);
 INSERT INTO Locations VALUES (2,'AB-224-BA',1,3,1354,"2020-06-05",2);

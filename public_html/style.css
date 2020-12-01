@@ -10,9 +10,29 @@ body {
     box-shadow: 5px 0px 30px #000;
     border-radius: 8px;
 }
-footer {
-    margin-top:4em;
+
+body.empty #textReply,
+body.empty #pyEditor,
+body.empty #dbEditor,
+body.empty #testButton,
+body.empty #cancelButton,
+body.empty #validateButton,
+body.text #dbEditor,
+body.text #pyEditor,
+body.text #testButton,
+body.text #printButton,
+body.sql #textReply,
+body.sql #pyEditor,
+body.sql #printButton,
+body.db #textReply,
+body.db #pyEditor,
+body.db #cancelButton,
+body.db #validateButton,
+#dbReply,
+#pyReply {
+    display: none;
 }
+
 p {
     text-align: justify;
 }
@@ -22,17 +42,17 @@ p {
 .response {
     display: none;
 }
-.content pre {
+#sujet pre {
     border: 1px black solid;
     background-color: lightgray;
     padding: 1em;    
     margin: 1em;
     overflow: auto;
 }
-.textReply {
+#textReply {
     padding: 1em;
 }
-#textReply {
+#textEditor {
      border: 1px solid #222;
     min-height:5.5em;
     height: auto;
@@ -91,6 +111,7 @@ th, td {
 }
 
 footer {
+    margin-top:4em;
     font-size:.8em;
     color: #222;
 }
