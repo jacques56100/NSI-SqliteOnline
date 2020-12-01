@@ -4,32 +4,29 @@
     <head>
         <meta charset="utf-8">
         <title>Online SQL interpreter</title>
-        <link rel="icon" type="image/png" href="favicon.png">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.1/codemirror.css">
+        <link rel="icon" type="image/png" href="favicon.ico">
+        <link rel="stylesheet" href="codemirror.css">
         <link rel="stylesheet" href="style.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.1/codemirror.js"></script>
     </head>
 
     <body>
-        <div id="content" class="content">
-        </div>
-        <textarea id="commands"></textarea>
-        <div class="textReply"><textarea id="textReply"></textarea></div>
-        <br>
+        <div id="sujet"></div>
+        <div id="textReply"><textarea id="textEditor"></textarea></div>
+        <textarea id="dbReply"></textarea>
+        <textarea id="pyReply" cols="40" rows="10"></textarea><br /> 
         <button id="testButton" onclick=test(this)>Tester</button>
         <button id="validateButton" onclick=validate(this)>Valider</button>
         <button id="cancelButton" onclick=giveup(this)>Abandonner</button>
-        <button id="printButton"  style="display:none" onclick=window.print()>Générer un pdf</button>
+        <button id="printButton"  onclick=window.print()>Générer un pdf</button>
         <div id="error" class="error"></div>
         <pre id="output">Les résultats apparaitront ici</pre>
-        <br>
-        <br>
-        <br>
-        <br>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.1/mode/sql/sql.min.js"></script>
+        <div id="pycanvas"></div> 
         <script type="text/javascript" src="script.js"></script>
         <footer>Ce site est propulsé par <a href="https://sql.js.org/">SQLite compiled to JavaScript</a>.
-        Cette œuvre est mise à disposition selon les termes de la <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Licence Creative Commons Attribution 4.0 International</a>.</footer>
+            Cette œuvre est mise à disposition selon les termes de la 
+            <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+                Licence Creative Commons Attribution 4.0 International</a>.
+        </footer>
     </body>
 
 </html>

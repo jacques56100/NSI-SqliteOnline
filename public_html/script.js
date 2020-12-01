@@ -1,67 +1,106 @@
-var outputElm = document.getElementById('output');
-var errorElm = document.getElementById('error');
-var commandsElm = document.getElementById('commands');
-var textReply = document.getElementById('textReply');
-var textElm = document.getElementById('content');
-var testButton = document.getElementById('testButton');
-var cancelButton = document.getElementById("cancelButton");
-var validateButton = document.getElementById("validateButton");
-var printButton = document.getElementById("printButton");
+let body = document.getElementsByTagName('body')[0];
+let sujet = document.getElementById('sujet');
+let outputElm = document.getElementById('output');
+let errorElm = document.getElementById('error');
+let textReply = document.getElementById('textReply');
+let dbReply = document.getElementById("dbReply");
+let pyReply = document.getElementById("pyReply");
+let textEditor = document.getElementById('textEditor');
+let testButton = document.getElementById('testButton');
+let cancelButton = document.getElementById("cancelButton");
+let validateButton = document.getElementById("validateButton");
+let printButton = document.getElementById("printButton");
+let dbEditor = null;
+let worker = null;
+let question = null;
+let pyProg = "";
+let nbQuestion = 0;
 
-var editor = CodeMirror.fromTextArea(commandsElm, {
-    mode: 'text/x-mysql',
-    viewportMargin: Infinity,
-    indentWithTabs: true,
-    smartIndent: true,
-    lineNumbers: true,
-    matchBrackets: true,
-    autofocus: true,
-    extraKeys: {
-        "Ctrl-Enter": test,
-    }
-});
-dbReply = document.getElementsByClassName('CodeMirror')[0];
-dbReply.style = {};
-outputElm.style = {};
-errorElm.style = {};
 
-var question = null;
-var worker = new Worker("worker.sql-wasm.js");
-worker.onerror = error;
-function error(e) {
-    errorElm.textContent = e.message;
-    outputElm.textContent = "Essaie encore...";
+// Les fonctions pour python
+function initPy() {
+    pyEditor = CodeMirror.fromTextArea(pyReply, {
+        mode: 'text/x-python',
+        viewportMargin: Infinity,
+        indentWithTabs: true,
+        smartIndent: true,
+        lineNumbers: true,
+        matchBrackets: true,
+        autofocus: true,
+        extraKeys: {
+            "Ctrl-Enter": test,
+        }
+    });
+    pyReply = pyReply.nextElementSibling;
+    pyReply.id="pyEditor";
 }
-function noerror() {
-    errorElm.textContent = "";
+
+function readPy(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+        throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
 }
-function execute(commands) {
+function execPy(prog) {
+    Sk.pre = "output";
+    out("");
+    Sk.configure({output: outAppend, read: readPy});
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'pycanvas';
+    let myPromise = Sk.misceval.asyncToPromise(function () {
+        return Sk.importMainWithBody("<stdin>", false, prog, true);
+    });
+    myPromise.then(function (mod) {
+        noerror();
+    },
+            function (err) {
+                error(err.toString());
+            });
+}
+
+function initSql() {
+    dbEditor = CodeMirror.fromTextArea(dbReply, {
+        mode: 'text/x-mysql',
+        viewportMargin: Infinity,
+        indentWithTabs: true,
+        smartIndent: true,
+        lineNumbers: true,
+        matchBrackets: true,
+        autofocus: true,
+        extraKeys: {
+            "Ctrl-Enter": test,
+        }
+    });
+    worker = new Worker("worker.sql-wasm.js");
+    worker.onerror = error;
+    dbReply = dbReply.nextElementSibling;
+    dbReply.id="dbEditor";
+}
+function execSql(commands) {
     worker.onmessage = function (event) {
-        var results = event.data.results;
+        let results = event.data.results;
         if (!results) {
-            error({message: event.data.error});
+            error(event.data.error);
             return;
         }
-        outputElm.innerHTML = "";
-        for (var i = 0; i < results.length; i++) {
+        out("");
+        for (let i = 0; i < results.length; i++) {
             outputElm.appendChild(tableCreate(results[i].columns, results[i].values));
         }
     }
     worker.postMessage({action: 'exec', sql: commands});
-    outputElm.textContent = "Je cherche...";
+    out("Je cherche...");
 }
 
-var tableCreate = function () {
+let tableCreate = function () {
     function valconcat(vals, tagName) {
         if (vals.length === 0)
             return '';
-        var open = '<' + tagName + '>', close = '</' + tagName + '>';
+        let open = '<' + tagName + '>', close = '</' + tagName + '>';
         return open + vals.join(close + open) + close;
     }
     return function (columns, values) {
-        var tbl = document.createElement('table');
-        var html = '<thead>' + valconcat(columns, 'th') + '</thead>';
-        var rows = values.map(function (v) {
+        let tbl = document.createElement('table');
+        let html = '<thead>' + valconcat(columns, 'th') + '</thead>';
+        let rows = values.map(function (v) {
             return valconcat(v, 'td');
         });
         html += '<tbody>' + valconcat(rows, 'tr') + '</tbody>';
@@ -70,47 +109,74 @@ var tableCreate = function () {
     }
 }();
 
+function out(text) {
+    outputElm.textContent = text;
+}
+function outAppend(text) {
+    outputElm.textContent += text;
+}
+function error(text) {
+    errorElm.textContent = text;
+    out("Essaie encore...");
+}
+function noerror() {
+    errorElm.textContent = "";
+}
 function test() {
     noerror();
-    if(isDb()) execute(editor.getValue() + ';');
+    if (isDb()) execSql(dbEditor.getValue() + ';');
+    else if (isPy()) execPy(pyProg + pyEditor.getValue());
 }
 function validate() {
     test();
-    show(false);
-    advance();
+    buildResponse(false);
+    nextQuestion();
 }
 function giveup() {
-    show(true);    
-    if(isDb()) editor.setValue(getSolution());
+    buildResponse(true);
+    if (isDb()) dbEditor.setValue(getSolution());
+    else if (isPy()) pyEditor.setValue(getSolution());
     test();
-    advance();
+    nextQuestion();
 }
 function getSolution() {
-    if(question.getElementsByClassName("response").length!=0) {        
+    if (question.getElementsByClassName("response").length != 0) {
         return question.getElementsByClassName("response")[0].innerHTML;
     }
     return "";
 }
+function isDb() {
+    return !isText() && !isPy(); // pour compatibilité ascendante
+    //return question.classList.contains("db");
+}
 function isText() {
+    if (question == null) return false;
     return question.classList.contains("text");
 }
-function isDb() {
-    return !isText();
+function isPy() {
+    if (question == null) return false;
+    return question.classList.contains("py");
 }
 function hasResponse() {
-    return question.getElementsByClassName("response").length!=0;
+    return question.getElementsByClassName("response").length != 0;
 }
-function show(cancel) {
-    var response = (isText()) ? textReply.value : editor.getValue();
-    if(hasResponse()) {        
+function getResponse() {
+    if (isText()) return textEditor.value;
+    if (isDb()) return dbEditor.getValue();
+    if (isPy()) return pyEditor.getValue();
+    return "";
+}
+function buildResponse(cancel) {
+    let response = getResponse();
+    if (hasResponse()) {
         response += (cancel) ? "\n---- Dommage: ----\n" : "\n-----------\n( ";
         response += getSolution();
         response += (cancel) ? "" : " )";
-    }    
-    question.innerHTML += "<pre><code>" + response  + "</code></pre>";    
+    }
+    question.innerHTML += "<pre><code>" + response + "</code></pre>";
 }
-
-function advance() {
+function nextQuestion() {
+    if (isPy()) pyProg += getResponse() + "\n";
     el = question;
     el = el.nextElementSibling;
     while (el != null) {
@@ -127,42 +193,26 @@ function advance() {
 }
 
 function updateDisplay() {
-    if(question == null) {
-        textReply.style.display = "none";
-        dbReply.style.display = "none";
-        testButton.style.display = "none";
-        validateButton.style.display = "none";
-        cancelButton.style.display = "none";
-        printButton.style.display = "";
-    }
-    if(isText()) {
-        textReply.style.display = "block";
-        dbReply.style.display = "none";
-        testButton.style.display = "none";
-        outputElm.style.display = "none";
-        errorElm.style.display = "none";
-        textReply.value = "";
-    } else {
-        textReply.style.display = "none";
-        dbReply.style.display = "block";
-        testButton.style.display = "";
-        outputElm.style.display = "";
-        errorElm.style.display = "";
-    }
+    // Remove all classes from body
+    body.className = "";
+    // Then add one
+    if (nbQuestion == 0) body.classList.add("db");
+    else if (question == null) body.classList.add("empty");
+    else if (isText()) body.classList.add("text");
+    else if (isDb()) body.classList.add("sql");
+    else if (isPy()) body.classList.add("py");
 }
 
-
-function updateContent() {
-    var display = true;
-    els = document.getElementById("content").childNodes;
-    var nb = 0;
+function initContent() {
+    let display = true;
+    els = sujet.childNodes;
     for (el in els) {
         if (els[el].classList != undefined)
             if (els[el].classList.contains("question")) {
-                nb++;
+                nbQuestion++;
             }
     }
-    var i = 1;
+    let i = 1;
     for (el in els) {
         if (els[el].style == undefined) continue;
         if (!display) els[el].style.display = "none";
@@ -170,42 +220,118 @@ function updateContent() {
             if (display) {
                 display = false;
                 question = els[el];
-                updateDisplay();
             }
-            els[el].innerHTML = "<b>" + i + "/" + nb + " : </b>" + els[el].innerHTML;
+            els[el].innerHTML = "<b>" + i + "/" + nbQuestion + " : </b>" + els[el].innerHTML;
             i++;
         }
-
     }
 }
 
+// Les fonctions de chargement de fichiers.
+function reloadSqlFile() {
+    execSql(db);
+}
+function openSqlFile(event) {
+    let files = event.target.files;
+    if (files.length == 0) return;
+    let file = files[0];
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        db = event.target.result;
+        execSql(db);
+    });
+    reader.readAsText(file);
+}
+
+let loads = [];
+function nextLoad() {
+    if (loads.length != 0) {
+        fileName = loads.shift();
+        fileExtension = fileName.split('.').pop();
+        switch (fileExtension) {
+            case "html":
+                loadHtml(fileName);
+                break;
+            case "sql":
+                loadDb(fileName);
+                break;
+            case "js":
+                loadJs(fileName);
+                break;
+        }
+    } else {
+        initContent();
+        if (db != null) {
+            initSql();
+            execSql(db);
+        }
+        if (py != null) {
+            initPy();
+        }
+        updateDisplay();
+    }
+}
+function load(fileName) {
+    loads.push(fileName);
+}
+function loadJs(jsFile) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", jsFile, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status >= 200 && xhr.status < 300 || xhr.status == 304) {
+                let script = document.createElement("script");
+                script.type = "text/javascript";
+                script.text = xhr.responseText;
+                document.body.appendChild(script);
+                nextLoad();
+            }
+        }
+    };
+    xhr.send(null);
+}
 function loadHtml(htmlFile) {
-    var xcontent = new XMLHttpRequest();
+    let xcontent = new XMLHttpRequest();
     xcontent.overrideMimeType("text/html");
-    xcontent.open('GET', "TP/" + htmlFile + ".html", true);
+    xcontent.open('GET', "TP/" + htmlFile, true);
     xcontent.onreadystatechange = function () {
         if (xcontent.readyState == 4 && xcontent.status == "200") {
-            textElm.innerHTML = xcontent.responseText
-            updateContent();
+            sujet.innerHTML = xcontent.responseText
+            nextLoad();
         }
     };
     xcontent.send(null);
 }
 function loadDb(dbFile) {
-    var xdb = new XMLHttpRequest();
+    let xdb = new XMLHttpRequest();
     xdb.overrideMimeType("text/sql");
-    xdb.open('GET', "TP/" + dbFile + ".sql", true);
+    xdb.open('GET', "TP/" + dbFile, true);
     xdb.onreadystatechange = function () {
         if (xdb.readyState == 4 && xdb.status == "200") {
-            execute(xdb.responseText);
+            db = xdb.responseText;
+            nextLoad();
         }
     };
     xdb.send(null);
 }
 
-var regex = new RegExp('(\\?|&|^)html=(.*?)(&|$)');
-var html = document.location.href.match(regex);
-if (html != null) loadHtml(html[2]);
+let regex = new RegExp('(\\?|&|^)html=(.*?)(&|$)');
+let html = document.location.href.match(regex);
+if (html != null) load(html[2] + ".html");
 regex = new RegExp('(\\?|&|^)db=(.*?)(&|$)');
-var db = document.location.href.match(regex);
-if (db != null) loadDb(db[2]);  
+let db = document.location.href.match(regex);
+if (db != null) {
+    load("codemirror.js");
+    load("sql-mode.js");
+    if (db[2] != "") load(db[2] + ".sql");
+}
+regex = new RegExp('(\\?|&|^)py=(.*?)(&|$)');
+let py = document.location.href.match(regex);
+if (py != null) {
+    load("codemirror.js");
+    load("python-mode.js");
+    load("skulpt.min.js");
+    load("skulpt-stdlib.js");
+}
+
+nextLoad();
