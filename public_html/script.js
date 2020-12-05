@@ -15,10 +15,14 @@ let worker = null;
 let question = null;
 let pyProg = "";
 let nbQuestion = 0;
+let content = "";
 
 
 // Les fonctions pour python
+let initPyDone = false;
 function initPy() {
+    if(initPyDone) return;
+    initPyDone = true;
     pyEditor = CodeMirror.fromTextArea(pyReply, {
         mode: 'text/x-python',
         viewportMargin: Infinity,
@@ -32,7 +36,7 @@ function initPy() {
         }
     });
     pyReply = pyReply.nextElementSibling;
-    pyReply.id="pyEditor";
+    pyReply.id = "pyEditor";
 }
 
 function readPy(x) {
@@ -56,7 +60,10 @@ function execPy(prog) {
             });
 }
 
+let initSqlDone = false;
 function initSql() {
+    if(initSqlDone) return;
+    initSqlDone = true;
     dbEditor = CodeMirror.fromTextArea(dbReply, {
         mode: 'text/x-mysql',
         viewportMargin: Infinity,
@@ -72,7 +79,7 @@ function initSql() {
     worker = new Worker("worker.sql-wasm.js");
     worker.onerror = error;
     dbReply = dbReply.nextElementSibling;
-    dbReply.id="dbEditor";
+    dbReply.id = "dbEditor";
 }
 function execSql(commands) {
     worker.onmessage = function (event) {
@@ -141,7 +148,7 @@ function giveup() {
 }
 function getSolution() {
     if (question.getElementsByClassName("response").length != 0) {
-        return question.getElementsByClassName("response")[0].innerHTML;
+        return question.getElementsByClassName("response")[0].innerHTML.replaceAll("&lt;","<").replaceAll("&gt;",">");
     }
     return "";
 }
@@ -205,6 +212,7 @@ function updateDisplay() {
 
 function initContent() {
     let display = true;
+    nbQuestion = 0;
     els = sujet.childNodes;
     for (el in els) {
         if (els[el].classList != undefined)
@@ -242,6 +250,25 @@ function openSqlFile(event) {
     });
     reader.readAsText(file);
 }
+function reloadHtmlFile() {
+    let start = document.getElementById("start");
+    while(start.nextSibling != null) 
+        sujet.removeChild(start.nextSibling);
+    sujet.innerHTML += content;
+    initContent();
+    updateDisplay();
+}
+function openHtmlFile(event) {
+    let files = event.target.files;
+    if (files.length == 0) return;
+    let file = files[0];
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        content = event.target.result;
+        reloadHtmlFile();
+    });
+    reader.readAsText(file);
+}
 
 let loads = [];
 function nextLoad() {
@@ -249,6 +276,9 @@ function nextLoad() {
         fileName = loads.shift();
         fileExtension = fileName.split('.').pop();
         switch (fileExtension) {
+            case "py":
+                loadPy(fileName);
+                break;
             case "html":
                 loadHtml(fileName);
                 break;
@@ -314,6 +344,18 @@ function loadDb(dbFile) {
     };
     xdb.send(null);
 }
+function loadPy(pyFile) {
+    let xdb = new XMLHttpRequest();
+    xdb.overrideMimeType("text/python");
+    xdb.open('GET', "TP/" + pyFile, true);
+    xdb.onreadystatechange = function () {
+        if (xdb.readyState == 4 && xdb.status == "200") {
+            pyProg = xdb.responseText;
+            nextLoad();
+        }
+    };
+    xdb.send(null);
+}
 
 let regex = new RegExp('(\\?|&|^)html=(.*?)(&|$)');
 let html = document.location.href.match(regex);
@@ -332,6 +374,7 @@ if (py != null) {
     load("python-mode.js");
     load("skulpt.min.js");
     load("skulpt-stdlib.js");
+    if (py[2] != "") load(py[2] + ".py");
 }
 
 nextLoad();

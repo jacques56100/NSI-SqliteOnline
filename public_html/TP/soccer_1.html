@@ -1,0 +1,51 @@
+<h2>Quelques statistiques sur le championnat 2015-2016</h2>
+<div class='question sql'>
+    Vérifiez qu'il y avait 20 équipes à participer au championnat.
+    <pre class='response'>SELECT COUNT(*) FROM Team;</pre>
+</div>
+<div class='question sql'>
+    Déterminez la date de création la plus ancienne de ces clubs.
+    <pre class='response'>SELECT MIN(birthday) FROM Team;</pre>
+</div>
+<div class='question sql'>
+    Déterminez le nom du club créé à cette date.
+    <pre class='response'>SELECT name FROM Team WHERE birthday=1881;</pre>
+</div>
+<div class='question sql'>
+    Affichez dans l'ordre de leur création, le plus ancien d'abord, le nom et la date de création des clubs ayant
+    disputé ce championnat. Vous utiliserez un ORDER BY.
+    <pre class='response'>SELECT name, birthday FROM Team ORDER BY birthday;</pre>
+</div>
+<div class='question sql'>
+    Vérifiez qu'il y a bien eu 380 matchs disputés.
+    <pre class='response'>SELECT COUNT(*) FROM Match;</pre>
+</div>
+<div class='question sql'>
+    Vérifiez qu'il y a bien eu 66 penaltys marqués.
+    <pre class='response'>SELECT COUNT(*) FROM Event WHERE type='penalty';</pre>
+</div>
+<div class='question sql'>
+    Et que 78 cartons rouges ont été distribués.
+    <pre class='response'>SELECT COUNT(*) FROM Event WHERE type='red';</pre>
+</div>
+<div class='question sql'>
+    Vérifiez qu'il y a bien eu 93 penaltys sifflés. Vous utiliserez un WHERE OR. 
+    <pre class='response'>SELECT COUNT(*) FROM Event WHERE type='penalty' OR type='miss';</pre>
+</div>
+<div class='question sql'>
+    Vérifiez qu'il y a bien eu 960 buts. Vous utiliserez un WHERE IN.
+    <pre class='response'>SELECT COUNT(*) FROM Event WHERE type IN ('penalty','goal','own');</pre>
+</div>
+<div class='question sql'>
+    Affichez les 10 cartons rouges obtenus le plus rapidement durant un match. Vous utiliserez un ORDER BY et un LIMIT. Vous noterez bien
+    l'identifiant du joueur et celui de l'équipe asociée au carton rouge le plus rapide.
+    <pre class='response'>SELECT * FROM Event WHERE type='red' ORDER BY time LIMIT 10;</pre>
+</div>
+<div class='question sql'>
+    Déterminez le nom de ce joueur.
+    <pre class='response'>SELECT name FROM Player WHERE id=392;</pre>
+</div>
+<div class='question sql'>
+    Ainsi que le nom de son club.
+    <pre class='response'>SELECT name FROM Team WHERE id=18;</pre>
+</div>

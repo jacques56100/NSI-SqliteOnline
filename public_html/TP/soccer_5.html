@@ -1,0 +1,72 @@
+<h2>Un peu de fiction</h2>
+
+<p>Vous avez les moyens de modifier l'histoire et vous décidez de ne pas vous en priver.
+    Vous allez commencer par réécrire le scénario du derby breton de septembre
+    dont l'identifiant est 129 dans la relation Match.</p>
+
+<div class='question sql'>
+    Affichez la liste des évènements associés à ce match.
+    <pre class='response'>SELECT * FROM Event where match=129;</pre>
+</div>
+
+<div class='question sql'>
+    Ajoutez le nom du joueur concerné.
+    <pre class='response'>SELECT Event.*, Player.name FROM Event 
+JOIN Player ON Event.player=Player.id
+WHERE match=129;</pre>
+</div>
+
+<div class='question sql'>
+    Ajoutez le nom de l'équipe concernée.
+    <pre class='response'>SELECT Event.*, Player.name, Team.city FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Team ON Event.team=Team.id
+WHERE match=129;</pre>
+</div>
+
+<div class='question sql'>
+    Limitez l'affichage à l'identifiant et à la minute de l'évènement, au nom du joueur, à celui de l'équipe et au type de l'évènement. 
+    L'affichage doit s'effectuer dans l'ordre chronologique.
+    <pre class='response'>SELECT Event.id, Event.time, Player.name, Team.city, Event.type FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Team ON Event.team=Team.id
+WHERE match=129
+ORDER BY time;</pre>
+</div>
+
+<div class='question sql'>
+    Vous vous souvenez que le but de Dembele n'était pas valide. Vous décidez de transformer ce but en carton rouge. 
+    Il vous faut utiliser UPDATE avec l'identifiant de l'évènement.
+    <pre class='response'>UPDATE Event SET type='red' WHERE id=301</pre>
+</div>
+
+<div class='question sql'>
+    Par contre le but refusé de Abdul Majeed Waris (identifiant 149) pour Lorient (identifiant 18) 
+    à la soixantième minute était parfaitement correct. Mais avant de l'ajouter il faut déterminer
+    un identifiant unique pour la table Event. Récupérez donc la valeur maximale des identifiants de cette
+    table.
+    <pre class='response'>SELECT Max(id) from Event;</pre>
+</div>
+
+<div class='question sql'>
+    Ajoutez donc ce superbe but avec une requête SELECT INTO
+    <pre class='response'>INSERT INTO Event(id,match,time,player,team,type)
+VALUES(2600,129,60,149,18,'goal');</pre>
+</div>
+
+<div class='question sql'>
+    Et puis le but de Jeremie Boga n'était pas non plus valable. Supprimez donc l'évènement d'identifiant 302.
+    <pre class='response'>DELETE FROM Event WHERE id=302;</pre>
+</div>
+
+<div class='question sql'>
+    Il ne reste plus qu'à visualisez à nouveau ce scénario. 
+    <pre class='response'>SELECT Event.time, Player.name, Team.city, Event.type FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Team ON Event.team=Team.id
+WHERE match=129
+ORDER BY time;</pre>
+</div>
+
+<p>Et un, et deux, et trois zéros !</p>
+<p>Ça a plus de gueule comme ça !</p>

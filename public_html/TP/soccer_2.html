@@ -1,0 +1,88 @@
+<h2>Analyse de la Dream Team</h2>
+<div class='question sql'>
+    Déterminez la clef primaire associée à l'équipe de Lorient.
+    <pre class='response'>SELECT id FROM Team WHERE name LIKE "%Lorient%";</pre>
+</div>
+<div class='question sql'>
+    Montrez que l'équipe de Lorient a marqué 47 buts.
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+WHERE type IN ('penalty','goal','own') AND team=18;</pre>
+</div>
+<div class='question sql'>
+    Et 21 buts à l'extérieur.
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+JOIN Match ON Event.match=Match.id 
+WHERE type IN ('penalty','goal','own') 
+AND team=18
+AND Match.home=18;</pre>
+</div>
+<div class='question sql'>
+    Qu'elle a encaissé 58 buts.
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+JOIN Match ON Event.match=Match.id 
+WHERE type IN ('penalty','goal','own') 
+AND team<>18
+AND (Match.home=18 OR Match.away=18);</pre>
+</div>
+<div class='question sql'>
+    Dont 21 à domicile.
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+JOIN Match ON Event.match=Match.id 
+WHERE type IN ('penalty','goal','own') 
+AND team<>18
+AND Match.home=18;</pre>
+</div>
+<div class='question sql'>
+    Qu'elle a marqué 26 fois pendant la première moitié de la  saison. 
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+JOIN Match ON Event.match=Match.id 
+WHERE type IN ('penalty','goal','own') 
+AND team<>18
+AND (Match.home=18 OR Match.away=18)
+AND stage<=19;</pre>
+</div>
+<div class='question sql'>
+    Que le but le plus rapide de la saison a été réalisé à la troisième minute. 
+    <pre class='response'>SELECT MIN(time) FROM Event 
+WHERE type IN ('penalty','goal','own') 
+AND team=18;</pre>
+</div>
+<div class='question sql'>
+    Affichez ce but marqué à la troisième minute en ajoutant le nom du joueur. 
+    <pre class='response'>SELECT Event.*, Player.name FROM Event 
+JOIN Player ON Event.player=Player.id
+WHERE type IN ('penalty','goal','own') 
+AND team=18
+AND time=3;</pre>
+</div>
+<div class='question sql'>
+    Vous ajouterez également la date du match. 
+    <pre class='response'>SELECT Event.*, Match.date, Player.name FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Match ON Event.match=Match.id
+WHERE type IN ('penalty','goal','own') 
+AND team=18
+AND time=3;</pre>
+</div>
+<div class='question sql'>
+    Vous ajouterez enfin le nom des équipes disputant ce match.
+    <pre class='response'>SELECT Event.*, Match.date, home.name, away.name, Player.name FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Match ON Event.match=Match.id
+JOIN Team AS home ON Match.home=home.id
+JOIN Team AS away ON Match.away=away.id
+WHERE type IN ('penalty','goal','own') 
+AND team=18
+AND time=3;</pre>
+</div>
+<div class='question sql'>
+    Et vous limiterez l'affichage à la date du match, le nom des équipes, celle du joueur et la minute du but.
+    <pre class='response'>SELECT Match.date, home.name, away.name, Player.name, Event.time FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Match ON Event.match=Match.id
+JOIN Team AS home ON Match.home=home.id
+JOIN Team AS away ON Match.away=away.id
+WHERE type IN ('penalty','goal','own') 
+AND team=18
+AND time=3;</pre>
+</div>

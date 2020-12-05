@@ -1,0 +1,97 @@
+<h2>Le derby</h2>
+
+<p>Vous souhaitez fournir pour chaque match un résumé incluant 
+    les noms des équipes, la date du match, la journée de championnat, le score, les buteurs,
+    les cartons... Ces informations apparaîtront à terme comme dans l'illustration
+ci-dessous. Mais avant de passer à la mise en page il faut extraire ces informations de la base de données.
+</p>
+<img src="TP/soccer1.png"/>
+
+
+<div class='question sql'>
+    Listez les matchs qui se sont déroulés le 9 janvier 2016. Sachant que l'identifiant de Lorient est 18, notez l'identifiant du match Rennes-Lorient.
+    <pre class='response'>SELECT * FROM Match where date='2016-01-09'</pre>
+</div>
+
+<div class='question sql'>
+    Affichez la date du match ainsi que les noms des villes du match d'identifiant 129.
+    <pre class='response'>SELECT match.date, home.city, away.city FROM Match 
+JOIN TEAM AS home ON home.id=Match.home
+JOIN TEAM AS away ON away.id=Match.away
+WHERE Match.id=129</pre>
+</div>
+
+<div class='question sql'>
+    Déterminez le nombre de buts marqués par Lorient.
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+WHERE match=129
+AND type in ('goal','penalty','own') 
+AND team=18;</pre>
+</div>
+
+<div class='question sql'>
+    Et le nombre de buts encaissés par Lorient.
+    <pre class='response'>SELECT COUNT(*) FROM Event 
+WHERE match=129
+AND type in ('goal','penalty','own') 
+AND team<>18;</pre>
+</div>
+
+<div class='question sql'>
+    Listez les buts marqués par Lorient dans l'ordre chronologique inverse.
+    <pre class='response'>SELECT * FROM Event 
+WHERE match=129
+AND type in ('goal','penalty','own') 
+AND team=18
+ORDER BY time DESC;</pre>
+</div>
+
+<div class='question sql'>
+    Ajoutez le nom du buteur.
+    <pre class='response'>SELECT Event.*, Player.name FROM Event 
+JOIN Player ON Event.player=Player.id
+WHERE match=129
+AND type in ('goal','penalty','own') 
+AND team=18
+ORDER BY time DESC;</pre>
+</div>
+
+<div class='question sql'>
+    Limitez l'affichage à la minute de jeu, le nom du buteur et le type du but.
+    <pre class='response'>SELECT Event.time, Player.name, Event.type FROM Event 
+JOIN Player ON Event.player=Player.id
+WHERE match=129
+AND type in ('goal','penalty','own') 
+AND team=18
+ORDER BY time DESC;</pre>
+</div>
+
+<div class='question sql'>
+    Fournissez le même résultat pour les buts encaissés par Lorient.
+    <pre class='response'>SELECT Event.time, Player.name, Event.type FROM Event 
+JOIN Player ON Event.player=Player.id
+WHERE match=129
+AND type in ('goal','penalty','own') 
+AND team<>18
+ORDER BY time DESC;</pre>
+</div>
+
+<div class='question sql'>
+    Fournissez le même résultat pour les cartons distribués durant ce match.
+    <pre class='response'>SELECT Event.time, Player.name, Event.type FROM Event 
+JOIN Player ON Event.player=Player.id
+WHERE match=129
+AND type in ('yellow','yellow2','red') 
+ORDER BY time DESC;</pre>
+</div>
+
+<div class='question sql'>
+    Précisez pour chacun de ces cartons le nom de l'équipe.
+    <pre class='response'>SELECT Event.time, Player.name, Event.type, Team.name FROM Event 
+JOIN Player ON Event.player=Player.id
+JOIN Team ON Event.team=Team.id
+WHERE match=129
+AND type in ('yellow','yellow2','red') 
+ORDER BY time DESC;</pre>
+</div>
+

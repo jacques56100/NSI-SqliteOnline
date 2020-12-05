@@ -1,0 +1,62 @@
+<h2>Le derby</h2>
+
+<p>Vous souhaitez également fournir pour chaque joueur un résumé incluant 
+    le nombre de buts, de cartons, de pénaltys tirés ou ratés.
+</p>
+
+
+
+<div class='question sql'>
+    Vous choisissez de tester votre base sur le buteur du match Rennes-Lorient, Abdul Majeed Waris. Rechercher l'identifiant de Waris dans la 
+    relation Player.
+    <pre class='response'>SELECT * FROM Player where name LIKE '%Waris%';</pre>
+</div>
+
+<div class='question sql'>
+    Vous décidez de lister les différents types d'évènements associés à ce joueur. Affichez le nombre de buts marqués durant la saison.
+    <pre class='response'>SELECT DISTINCT type FROM Event WHERE Player=149;</pre>
+</div>
+<div class='question sql'>
+    Donc il n'a jamais marqué contre son camp ni obtenu deux cartons jaunes. Combien de penaltys a-t-il marqués ?
+    <pre class='response'>SELECT COUNT(*) FROM Event WHERE Player=149 AND type='penalty';</pre>
+</div>
+<div class='question sql'>
+    Listez les buts en précisant leur type (goal ou penalty) et la minute du match;
+    <pre class='response'>SELECT type, time FROM Event WHERE Player=149 AND type IN ('goal','penalty');</pre>
+</div>
+<div class='question sql'>
+    Ajoutez à cette liste la date du match.
+    <pre class='response'>SELECT date,type FROM Event 
+JOIN Match ON Event.match=Match.id
+WHERE Player=149 AND type IN ('goal','penalty');</pre>
+</div>
+<div class='question sql'>
+    Ajoutez à cette liste les villes des équipes s'affrontant durant ces matchs.
+    <pre class='response'>SELECT date, home.city, away.city, type, time FROM Event 
+JOIN Match ON Event.match=Match.id
+JOIN Team AS home ON Match.home=home.id
+JOIN Team AS away ON Match.away=away.id
+WHERE Player=149 AND type IN ('goal','penalty');</pre>
+</div>
+<div class='question sql'>
+    Présentez cette liste dans l'ordre chronologique (date du match et minute dans le match)
+    <pre class='response'>SELECT date, home.city, away.city, type, time FROM Event 
+JOIN Match ON Event.match=Match.id
+JOIN Team AS home ON Match.home=home.id
+JOIN Team AS away ON Match.away=away.id
+WHERE Player=149 AND type IN ('goal','penalty')
+ORDER BY date, time;</pre>
+</div>
+<div class='question sql'>
+    Effectuez le même traitement mais pour les cartons reçus.
+    <pre class='response'>SELECT date, home.city, away.city, type, time FROM Event 
+JOIN Match ON Event.match=Match.id
+JOIN Team AS home ON Match.home=home.id
+JOIN Team AS away ON Match.away=away.id
+WHERE Player=149 AND type IN ('yellow','yellow2','red')
+ORDER BY date, time;</pre>
+</div>
+
+<p>Il semble que vous maîtrisez parfaitement votre base de données. Il est temps de se consacrer
+    maintenant à générer automatiquement les
+    fichiers HTML et à réaliser une belle mise en page.</p>

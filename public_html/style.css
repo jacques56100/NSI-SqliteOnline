@@ -28,6 +28,9 @@ body.db #textReply,
 body.db #pyEditor,
 body.db #cancelButton,
 body.db #validateButton,
+body.py #textReply,
+body.py #dbEditor,
+body.py  #printButton,
 #dbReply,
 #pyReply {
     display: none;
@@ -42,7 +45,7 @@ p {
 .response {
     display: none;
 }
-#sujet pre {
+#sujet pre, pre.gray {
     border: 1px black solid;
     background-color: lightgray;
     padding: 1em;    
