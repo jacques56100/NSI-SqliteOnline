@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Les bases de données</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="favicon.ico">
+        <link rel="stylesheet" href="style.css">       
+    </head>
+    <body>        
+        <h2>Introduction</h2>
+        <p>Une <a href ="tp.html?html=intro">introduction</a> sur le principe et l'intérêt des bases de données.
+            Ce support est basé sur une vidéo de <a href="https://www.youtube.com/channel/UC-gmNqo2JEyMNoH8mTvh1oQ">Cédric GERLAND</a>
+            et un questionnaire de <a href="http://portail.lyc-la-martiniere-diderot.ac-lyon.fr/srv1/co/activite_bd_modele_relationnel.html">
+                Cédric Frayssinet</a>
+        </p>
+
+        <h2>TP: Gestion d'un réseau d'agences de location de voitures</h2>
+        <p>Vous venez de finir brillamment vos études et confiant dans
+            vos capacités, vous décidez de monter votre petite 
+            entreprise. Vous avez choisi de vous lancer dans la
+            location de véhicules et en à peine 6 mois vous êtes déjà à
+            la tête d'un réseau d'agences. Malheureusement, il
+            apparaît que les rentrées financières ne décollent pas
+            vraiment et il est temps d'analyser en détail votre 
+            historique des locations, le déplacement de vos véhicules
+            et la synergie entre vos différentes agences.
+        </p>
+        <a href ="TP/locations.pdf" target="_blank">Le modèle relationnel en image</a><br>
+        <p><a href ="tp.html?html=locations_1&db=locations">La relation Agences</a> : vous allez 
+            utiliser SELECT associé à des WHERE, WHERE LIKE et WHERE IN. Vous utiliserez également
+            les fonctions COUNT et SUBSTR.</p>
+        <p><a href ="tp.html?html=locations_2&db=locations">La relation Vehicules</a> : vous allez 
+            utiliser SELECT avec AS et ORDER BY. Vous utiliserez également
+            les fonctions MAX, MIN, AVG.</p>
+        <p><a href ="tp.html?html=locations_3&db=locations">La relation Locations</a> : vous définirez
+            des jointures entre les trois relations avec des JOIN AS ON.
+        <p><a href ="tp.html?html=locations_4&db=locations">Gestion du réseau</a> : vous utiliserez
+            les commandes UPDATE, INSERT et DELETE.
+
+        <h2>Faire son propre TP</h2>
+        <p>C'est tout simple et c'est gratuit. Pour initialiser la base de donnée, il vous faut un fichier SQL, sqlite plus précisément, comme
+            <a href ="TP/simple.sql">celui-ci</a> ou <a href ="TP/locations.sql">celui-là</a> (attention aux accents).
+        </p>
+        <p> Si vous souhaitez guider vos élèves vous pouvez également leur fournir un sujet en html, comme <a href ="TP/simple.html">celui-ci</a>. Toute
+            la syntaxe html est autorisée. Les questions et leurs réponses éventuelles doivent vérifier le format suivant. La partie réponse est optionnelle.
+        <pre class="gray">&lt;div class='question sql'&gt;D&eacute;terminez le nombre d'agences de votre r&eacute;seau.
+    &lt;pre class='response'&gt;SELECT COUNT(*) FROM Agences&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class='question text'&gt;Quel ordre de grandeur peuvent atteindre les bases de donn&eacute;es actuelles ?
+    &lt;pre class='response'&gt;Le p&eacute;taoctet. Un p&eacute;taoctet vaut un million de milliards d&rsquo;octets.&lt;/pre&gt;
+&lt;/div&gt;</pre>
+        <p>Pour s'entraîner avec sa propre base de données, c'est <a href ="tp.html?html=localDB&db=empty">ici</a>.
+        </p>
+        
+
+        <footer>Ce site est propulsé par <a href="https://sql.js.org/">SQLite compiled to JavaScript</a>.
+            Cette œuvre est mise à disposition selon les termes de la 
+            <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+                Licence Creative Commons Attribution 4.0 International</a>.
+        </footer>
+
+
+    </body>
+
+</html>
