@@ -21,7 +21,7 @@ let content = "";
 // Les fonctions pour python
 let initPyDone = false;
 function initPy() {
-    if(initPyDone) return;
+    if (initPyDone) return;
     initPyDone = true;
     pyEditor = CodeMirror.fromTextArea(pyReply, {
         mode: 'text/x-python',
@@ -62,7 +62,7 @@ function execPy(prog) {
 
 let initSqlDone = false;
 function initSql() {
-    if(initSqlDone) return;
+    if (initSqlDone) return;
     initSqlDone = true;
     dbEditor = CodeMirror.fromTextArea(dbReply, {
         mode: 'text/x-mysql',
@@ -148,7 +148,7 @@ function giveup() {
 }
 function getSolution() {
     if (question.getElementsByClassName("response").length != 0) {
-        return question.getElementsByClassName("response")[0].innerHTML.replaceAll("&lt;","<").replaceAll("&gt;",">");
+        return question.getElementsByClassName("response")[0].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     }
     return "";
 }
@@ -252,7 +252,7 @@ function openSqlFile(event) {
 }
 function reloadHtmlFile() {
     let start = document.getElementById("start");
-    while(start.nextSibling != null) 
+    while (start.nextSibling != null)
         sujet.removeChild(start.nextSibling);
     sujet.innerHTML += content;
     initContent();

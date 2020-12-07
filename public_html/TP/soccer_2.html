@@ -29,7 +29,7 @@ AND (Match.home=18 OR Match.away=18);</pre>
     <pre class='response'>SELECT COUNT(*) FROM Event 
 JOIN Match ON Event.match=Match.id 
 WHERE type IN ('penalty','goal','own') 
-AND team<>18
+AND team=18
 AND Match.home=18;</pre>
 </div>
 <div class='question sql'>
@@ -37,8 +37,7 @@ AND Match.home=18;</pre>
     <pre class='response'>SELECT COUNT(*) FROM Event 
 JOIN Match ON Event.match=Match.id 
 WHERE type IN ('penalty','goal','own') 
-AND team<>18
-AND (Match.home=18 OR Match.away=18)
+AND team=18
 AND stage<=19;</pre>
 </div>
 <div class='question sql'>
