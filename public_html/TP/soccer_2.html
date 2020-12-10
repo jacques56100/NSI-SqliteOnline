@@ -47,7 +47,7 @@ WHERE type IN ('penalty','goal','own')
 AND team=18;</pre>
 </div>
 <div class='question sql'>
-    Affichez ce but marqué à la troisième minute en ajoutant le nom du joueur. 
+    Affichez le ou les buts marqués à la troisième minute en ajoutant le nom du joueur. 
     <pre class='response'>SELECT Event.*, Player.name FROM Event 
 JOIN Player ON Event.player=Player.id
 WHERE type IN ('penalty','goal','own') 
@@ -64,7 +64,7 @@ AND team=18
 AND time=3;</pre>
 </div>
 <div class='question sql'>
-    Vous ajouterez enfin le nom des équipes disputant ce match.
+    Vous ajouterez enfin le nom des équipes impliquées.
     <pre class='response'>SELECT Event.*, Match.date, home.name, away.name, Player.name FROM Event 
 JOIN Player ON Event.player=Player.id
 JOIN Match ON Event.match=Match.id
